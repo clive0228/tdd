@@ -5,6 +5,7 @@ install:
 - pip install -r requirements.txt
 - pip install -r test_requirements.txt
 before_script:
+- python manage.py runserver
 - flake8 .
 - "export DISPLAY=:99.0"
 - 'sh -e /etc/init.d/xvfb start'
