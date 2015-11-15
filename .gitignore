@@ -74,6 +74,4 @@ Django
 #media
 media/
 
-
-pytest.ini
 chromedriver.exe
