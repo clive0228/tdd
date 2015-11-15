@@ -53,8 +53,8 @@ class NewVisitorTest(LiveServerTestCase):
 
         # another user francis connect into website
 
-        ## by the new browser session,
-        ## prevent inflow of edith`s info through cookie
+        # # by the new browser session,
+        # # prevent inflow of edith`s info through cookie
         self.browser.quit()
         self.browser = webdriver.Firefox()
 
