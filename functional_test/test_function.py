@@ -35,10 +35,11 @@ class NewVisitorTest(LiveServerTestCase):
 
         # buying craft feather
         inputbox.send_keys("buying craft feather")
+        inputbox.send_keys(Keys.ENTER)
+        edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
 
         # renew website and show first job
-        inputbox.send_keys(Keys.ENTER)
-
         self.check_for_row_in_list_table("1: buying craft feather")
 
         # add another item in list
@@ -46,8 +47,35 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys("making web using craft feather")
         inputbox.send_keys(Keys.ENTER)
 
+        # show added item in list
         self.check_for_row_in_list_table("2: making web using craft feather")
         self.check_for_row_in_list_table("1: buying craft feather")
 
-        # terminate website
-        # self.fail('finish the test')
+        # another user francis connect into website
+
+        ## by the new browser session,
+        ## prevent inflow of edith`s info through cookie
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        # Francis came into website,
+        # there are no edith`s list
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('buying craft feather', page_text)
+        self.assertNotIn('making web user craft feather', page_text)
+
+        # Francis type into new job item
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('buy milk')
+        inputbox.send_keys(Keys.ENTER)
+
+        # Francis get his own URL
+        francis_list_url = self.browser.current_url
+        self.assertRegex(francis_list_url, '/lists/.+')
+        self.assertNotEqual(francis_list_url, edith_list_url)
+
+        # check that any trace of edith is not exist
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('buying craft feather', page_text)
+        self.assertIn('buy milk', page_text)
